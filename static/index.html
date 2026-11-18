@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Densify - Container Scheduler</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span class="logo">D</span>Densify</div>
+  <p class="tagline">Multi-dimensional container scheduling using approximation algorithms</p>
+</header>
+
+<main>
+
+  <!-- 1. Input: node size + containers -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2><span class="step">1</span>Cluster and containers</h2>
+      <div class="actions">
+        <button id="btn-sample">Microservices sample</button>
+        <button id="btn-replicas">Replicas sample</button>
+        <button id="btn-random">Random</button>
+        <input id="random-n" type="number" value="20" min="1" max="500" title="How many random containers">
+        <label class="inline"><input id="random-replicas" type="checkbox"> with replicas</label>
+        <button id="btn-clear" class="ghost">Clear</button>
+      </div>
+    </div>
+
+    <div class="node-size">
+      <label>Node CPU (millicores) <input id="node-cpu" type="number" value="4000" min="1"></label>
+      <label>Node memory (MiB) <input id="node-mem" type="number" value="8192" min="1"></label>
+      <span class="hint">1000m = 1 CPU core &middot; 1024 MiB = 1 GiB &middot; every node is the same size<br>
+        Anti-affinity: containers with the same <b>group</b> (e.g. replicas web-1, web-2) never share a node</span>
+    </div>
+
+    <div class="table-wrap">
+      <table class="grid">
+        <thead><tr><th>#</th><th>Container name</th><th>CPU (m)</th><th>Memory (MiB)</th><th>Group (optional)</th><th></th></tr></thead>
+        <tbody id="container-tbody"></tbody>
+      </table>
+      <p id="empty-msg" class="empty">No containers yet. Click <b>Microservices sample</b> to start.</p>
+    </div>
+
+    <div class="row-actions">
+      <button id="btn-add" class="ghost">+ Add container</button>
+      <span id="count-info" class="hint"></span>
+    </div>
+
+    <button id="btn-run" class="primary">Run scheduler</button>
+    <p id="error" class="error"></p>
+  </section>
+
+  <!-- 2. Results -->
+  <section id="result-panel" class="panel hidden">
+    <h2><span class="step">2</span>Results</h2>
+    <div id="summary" class="summary"></div>
+    <p id="saving" class="saving"></p>
+    <p id="aa-info" class="aa-info hidden"></p>
+
+    <div id="algo-tabs" class="tabs"></div>
+    <div class="chart-box"><canvas id="node-chart"></canvas></div>
+    <div id="node-list" class="node-list"></div>
+  </section>
+
+  <!-- 3. Experiment -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2><span class="step">3</span>Experiment: how close to optimal?</h2>
+      <div class="actions">
+        <label class="inline">N <input id="exp-n" type="number" value="15" min="4" max="24"></label>
+        <label class="inline">Trials <input id="exp-trials" type="number" value="50" min="5" max="200"></label>
+        <button id="btn-exp">Run experiment</button>
+      </div>
+    </div>
+    <p class="hint">Runs First Fit, Best Fit, FFD and Knapsack DP on many random inputs and compares each with the exact optimum from Branch and Bound.</p>
+    <p id="exp-error" class="error"></p>
+    <div id="exp-result" class="hidden">
+      <div class="exp-grid">
+        <div class="chart-box"><canvas id="quality-chart"></canvas></div>
+        <div class="chart-box"><canvas id="runtime-chart"></canvas></div>
+      </div>
+      <table class="grid" id="exp-table"></table>
+    </div>
+  </section>
+
+</main>
+
+<script src="/static/chart.umd.min.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>
